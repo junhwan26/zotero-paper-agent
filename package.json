@@ -4,7 +4,7 @@
   "version": "3.1.0",
   "description": "Zotero Plugin Template",
   "config": {
-    "addonName": "Zotero Plugin Template",
+    "addonName": "Paper Agent",
     "addonID": "addontemplate@euclpts.com",
     "addonRef": "addontemplate",
     "addonInstance": "AddonTemplate",

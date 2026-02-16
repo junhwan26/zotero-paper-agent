@@ -8,7 +8,18 @@ declare namespace _ZoteroTypes {
   interface Prefs {
     PluginPrefsMap: {
       "enable": boolean;
-      "input": string;
+      "llmBaseUrl": string;
+      "llmModel": string;
+      "llmApiKey": string;
+      "embeddingBaseUrl": string;
+      "embeddingModel": string;
+      "enableHybridSearch": boolean;
+      "requireEvidence": boolean;
+      "localMode": boolean;
+      "localBaseUrl": string;
+      "localChatModel": string;
+      "localEmbeddingModel": string;
+      "readerStandalone": boolean;
     };
   }
 }

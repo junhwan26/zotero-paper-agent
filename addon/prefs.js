@@ -1,2 +1,13 @@
 pref("enable", true);
-pref("input", "This is input");
+pref("llmBaseUrl", "https://api.openai.com/v1/chat/completions");
+pref("llmModel", "gpt-4o-mini");
+pref("llmApiKey", "");
+pref("embeddingBaseUrl", "https://api.openai.com/v1/embeddings");
+pref("embeddingModel", "text-embedding-3-small");
+pref("enableHybridSearch", true);
+pref("requireEvidence", true);
+pref("localMode", false);
+pref("localBaseUrl", "http://127.0.0.1:11434/v1");
+pref("localChatModel", "qwen2.5:7b-instruct");
+pref("localEmbeddingModel", "nomic-embed-text");
+pref("readerStandalone", false);

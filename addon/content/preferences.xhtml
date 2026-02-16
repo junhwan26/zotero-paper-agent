@@ -1,29 +1,180 @@
 <linkset>
   <html:link rel="localization" href="__addonRef__-preferences.ftl" />
 </linkset>
-<groupbox
-  onload="Zotero.__addonInstance__.hooks.onPrefsEvent('load', { window })"
->
+<groupbox onload="Zotero.__addonInstance__.hooks.onPrefsEvent('load', { window })">
   <label><html:h2 data-l10n-id="pref-title"></html:h2></label>
+
   <checkbox
     id="zotero-prefpane-__addonRef__-enable"
     preference="enable"
     data-l10n-id="pref-enable"
   />
-  <hbox>
-    <html:label
-      for="zotero-prefpane-__addonRef__-input"
-      data-l10n-id="pref-input"
-    ></html:label>
+
+  <checkbox
+    id="zotero-prefpane-__addonRef__-enable-hybrid-search"
+    preference="enableHybridSearch"
+    label="Enable hybrid retrieval (keyword + embedding)"
+  />
+
+  <checkbox
+    id="zotero-prefpane-__addonRef__-require-evidence"
+    preference="requireEvidence"
+    label="Require evidence citation in responses"
+  />
+
+  <checkbox
+    id="zotero-prefpane-__addonRef__-local-mode"
+    preference="localMode"
+    label="Prefer local LLM/Embedding (Ollama/OpenAI-compatible)"
+  />
+
+  <checkbox
+    id="zotero-prefpane-__addonRef__-reader-standalone"
+    preference="readerStandalone"
+    label="Reader standalone mode (show only Paper Agent in right sidebar)"
+  />
+
+  <hbox align="center" class="pref-row">
+    <html:label for="zotero-prefpane-__addonRef__-llm-base-url"
+      >LLM Endpoint</html:label
+    >
     <html:input
       type="text"
-      id="zotero-prefpane-__addonRef__-input"
-      preference="input"
+      id="zotero-prefpane-__addonRef__-llm-base-url"
+      preference="llmBaseUrl"
+      style="min-width: 420px"
     ></html:input>
   </hbox>
-  <hbox class="virtualized-table-container" flex="1" height="300px">
-    <html:div id="__addonRef__-table-container" />
+
+  <hbox align="center" class="pref-row">
+    <html:label for="zotero-prefpane-__addonRef__-embedding-base-url"
+      >Embedding Endpoint</html:label
+    >
+    <html:input
+      type="text"
+      id="zotero-prefpane-__addonRef__-embedding-base-url"
+      preference="embeddingBaseUrl"
+      style="min-width: 420px"
+    ></html:input>
   </hbox>
+
+  <hbox align="center" class="pref-row">
+    <html:label for="zotero-prefpane-__addonRef__-embedding-model"
+      >Embedding Model</html:label
+    >
+    <menulist
+      id="zotero-prefpane-__addonRef__-embedding-model"
+      preference="embeddingModel"
+      editable="true"
+      style="min-width: 420px"
+    >
+      <menupopup>
+        <menuitem label="text-embedding-3-small" value="text-embedding-3-small" />
+        <menuitem label="text-embedding-3-large" value="text-embedding-3-large" />
+        <menuitem label="text-embedding-ada-002" value="text-embedding-ada-002" />
+        <menuitem label="nomic-embed-text" value="nomic-embed-text" />
+        <menuitem label="mxbai-embed-large" value="mxbai-embed-large" />
+        <menuitem label="bge-m3" value="bge-m3" />
+      </menupopup>
+    </menulist>
+  </hbox>
+
+  <hbox align="center" class="pref-row">
+    <html:label for="zotero-prefpane-__addonRef__-local-base-url"
+      >Local Base URL</html:label
+    >
+    <html:input
+      type="text"
+      id="zotero-prefpane-__addonRef__-local-base-url"
+      preference="localBaseUrl"
+      style="min-width: 420px"
+    ></html:input>
+  </hbox>
+
+  <hbox align="center" class="pref-row">
+    <html:label for="zotero-prefpane-__addonRef__-local-chat-model"
+      >Local Chat Model</html:label
+    >
+    <menulist
+      id="zotero-prefpane-__addonRef__-local-chat-model"
+      preference="localChatModel"
+      editable="true"
+      style="min-width: 420px"
+    >
+      <menupopup>
+        <menuitem label="qwen2.5:7b-instruct" value="qwen2.5:7b-instruct" />
+        <menuitem label="qwen2.5:14b-instruct" value="qwen2.5:14b-instruct" />
+        <menuitem label="llama3.1:8b-instruct" value="llama3.1:8b-instruct" />
+        <menuitem label="llama3.1:70b-instruct" value="llama3.1:70b-instruct" />
+        <menuitem label="mistral:7b-instruct" value="mistral:7b-instruct" />
+        <menuitem label="gemma2:9b-instruct" value="gemma2:9b-instruct" />
+      </menupopup>
+    </menulist>
+  </hbox>
+
+  <hbox align="center" class="pref-row">
+    <html:label for="zotero-prefpane-__addonRef__-local-embedding-model"
+      >Local Embedding Model</html:label
+    >
+    <menulist
+      id="zotero-prefpane-__addonRef__-local-embedding-model"
+      preference="localEmbeddingModel"
+      editable="true"
+      style="min-width: 420px"
+    >
+      <menupopup>
+        <menuitem label="nomic-embed-text" value="nomic-embed-text" />
+        <menuitem label="mxbai-embed-large" value="mxbai-embed-large" />
+        <menuitem label="bge-m3" value="bge-m3" />
+      </menupopup>
+    </menulist>
+  </hbox>
+
+  <hbox align="center" class="pref-row">
+    <html:label for="zotero-prefpane-__addonRef__-llm-model"
+      >Model</html:label
+    >
+    <menulist
+      id="zotero-prefpane-__addonRef__-llm-model"
+      preference="llmModel"
+      editable="true"
+      style="min-width: 420px"
+    >
+      <menupopup>
+        <menuitem label="gpt-4o-mini" value="gpt-4o-mini" />
+        <menuitem label="gpt-4.1-mini" value="gpt-4.1-mini" />
+        <menuitem label="gpt-4.1" value="gpt-4.1" />
+        <menuitem label="o4-mini" value="o4-mini" />
+        <menuitem
+          label="claude-3-5-sonnet-latest"
+          value="claude-3-5-sonnet-latest"
+        />
+        <menuitem
+          label="claude-3-5-haiku-latest"
+          value="claude-3-5-haiku-latest"
+        />
+        <menuitem label="gemini-2.0-flash" value="gemini-2.0-flash" />
+        <menuitem label="gemini-1.5-pro" value="gemini-1.5-pro" />
+      </menupopup>
+    </menulist>
+  </hbox>
+
+  <hbox align="center" class="pref-row">
+    <html:label for="zotero-prefpane-__addonRef__-llm-api-key"
+      >API Key</html:label
+    >
+    <html:input
+      type="password"
+      id="zotero-prefpane-__addonRef__-llm-api-key"
+      preference="llmApiKey"
+      style="min-width: 420px"
+    ></html:input>
+  </hbox>
+
+  <checkbox
+    id="zotero-prefpane-__addonRef__-show-api-key"
+    label="Show API Key"
+  />
 </groupbox>
 <vbox>
   <html:label

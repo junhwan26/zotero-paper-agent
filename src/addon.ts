@@ -3,7 +3,7 @@ import { ColumnOptions, DialogHelper } from "zotero-plugin-toolkit";
 import hooks from "./hooks";
 import { createZToolkit } from "./utils/ztoolkit";
 
-interface AddonAPI {}
+type AddonAPI = Record<string, never>;
 
 class Addon {
   public data: {

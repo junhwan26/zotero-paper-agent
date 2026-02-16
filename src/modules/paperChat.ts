@@ -292,7 +292,7 @@ async function renderPaperChatSection(props: {
     hint.textContent =
       "Paper chat is disabled. Enable it in plugin preferences.";
     body.append(hint);
-    setL10nArgs('{\"status\": \"Off\"}');
+    setL10nArgs('{"status": "Off"}');
     setSectionSummary("disabled");
     return;
   }
@@ -414,7 +414,7 @@ async function renderPaperChatSection(props: {
     bubble.textContent = stringifyError(error);
     messages.append(bubble);
     statusText.textContent = stringifyError(error);
-    setL10nArgs('{\"status\": \"Error\"}');
+    setL10nArgs('{"status": "Error"}');
     setSectionSummary("error");
     return;
   }
@@ -1218,11 +1218,11 @@ function normalizeHeadingKey(value: string) {
   return String(value || "")
     .trim()
     .replace(/^#+\s*/, "")
-    .replace(/^\d+(?:\.\d+)*[\)\.]?\s+/, "")
-    .replace(/^[ivxlcdm]+[\)\.]?\s+/i, "")
+    .replace(/^\d+(?:\.\d+)*[).]?\s+/, "")
+    .replace(/^[ivxlcdm]+[).]?\s+/i, "")
     .replace(/[*_`~]/g, "")
     .replace(/\s+/g, " ")
-    .replace(/[.:;,\-]+$/g, "")
+    .replace(/[.:;,-]+$/g, "")
     .toLowerCase();
 }
 
@@ -1686,7 +1686,8 @@ function normalizeText(input: string) {
   return input
     .replace(/\r/g, "\n")
     .replace(/[\t\f\v]+/g, " ")
-    .replace(/\u0000/g, "")
+    .split("\u0000")
+    .join("")
     .replace(/[ ]{2,}/g, " ")
     .replace(/\n{3,}/g, "\n\n")
     .trim();

@@ -1346,7 +1346,8 @@ function findSectionEndIndex(
 
 function normalizeAttachmentContextText(text: string) {
   return String(text || "")
-    .replace(/\u0000/g, "")
+    .split("\u0000")
+    .join("")
     .replace(/\s+/g, " ")
     .trim();
 }

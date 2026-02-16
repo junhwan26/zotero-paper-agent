@@ -14,8 +14,14 @@
   --pc-radius-sm: 10px;
   --pc-transition: 170ms cubic-bezier(0.25, 0.1, 0.25, 1);
 
-  font-family: "SF Pro Text", "SF Pro Display", -apple-system, BlinkMacSystemFont,
-    "Helvetica Neue", "Segoe UI", sans-serif;
+  font-family:
+    "SF Pro Text",
+    "SF Pro Display",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Helvetica Neue",
+    "Segoe UI",
+    sans-serif;
   letter-spacing: -0.01em;
   color: var(--pc-text-primary);
   display: flex;
@@ -27,7 +33,11 @@
   border: 1px solid var(--pc-line-soft);
   border-radius: var(--pc-radius-lg);
   background:
-    linear-gradient(165deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.16)),
+    linear-gradient(
+      165deg,
+      rgba(255, 255, 255, 0.5),
+      rgba(255, 255, 255, 0.16)
+    ),
     var(--material-background, transparent);
   box-shadow: inset 0 1px rgba(255, 255, 255, 0.55);
 }
@@ -53,7 +63,11 @@
 .paper-chat-send {
   border: 1px solid var(--pc-line-strong);
   border-radius: var(--pc-radius-sm);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(242, 242, 247, 0.68));
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.82),
+    rgba(242, 242, 247, 0.68)
+  );
   color: var(--pc-text-primary);
   padding: 6px 12px;
   font-size: 12px;
@@ -147,7 +161,11 @@
   border: 1px solid var(--pc-line-soft);
   border-radius: 14px;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.74), rgba(250, 250, 252, 0.44)),
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.74),
+      rgba(250, 250, 252, 0.44)
+    ),
     var(--material-background, transparent);
   backdrop-filter: blur(22px) saturate(1.2);
   -webkit-backdrop-filter: blur(22px) saturate(1.2);
@@ -204,7 +222,11 @@
   max-width: 100%;
   color: var(--pc-text-primary);
   border: 1px solid var(--pc-line-soft);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(245, 245, 247, 0.72));
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.88),
+    rgba(245, 245, 247, 0.72)
+  );
 }
 
 .paper-chat-heading-link {
@@ -248,7 +270,9 @@
   color: var(--pc-text-primary);
   background: rgba(255, 255, 255, 0.84);
   box-sizing: border-box;
-  transition: border-color var(--pc-transition), box-shadow var(--pc-transition);
+  transition:
+    border-color var(--pc-transition),
+    box-shadow var(--pc-transition);
 }
 
 .paper-chat-input::placeholder {

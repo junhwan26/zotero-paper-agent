@@ -289,7 +289,8 @@ async function renderPaperChatSection(props: {
   if (!isPaperChatEnabled()) {
     body.textContent = "";
     const hint = createElement(doc, "div", "paper-chat-hint");
-    hint.textContent = "Paper chat is disabled. Enable it in plugin preferences.";
+    hint.textContent =
+      "Paper chat is disabled. Enable it in plugin preferences.";
     body.append(hint);
     setL10nArgs('{\"status\": \"Off\"}');
     setSectionSummary("disabled");
@@ -564,7 +565,10 @@ async function loadPromptConfigText() {
     throw new Error(`HTTP ${response.status}`);
   } catch {
     const zoteroFile = (Zotero as any).File;
-    if (zoteroFile && typeof zoteroFile.getContentsFromURLAsync === "function") {
+    if (
+      zoteroFile &&
+      typeof zoteroFile.getContentsFromURLAsync === "function"
+    ) {
       const value = await zoteroFile.getContentsFromURLAsync(PROMPT_CONFIG_URL);
       if (typeof value === "string" && value.trim()) {
         return value;
@@ -766,7 +770,11 @@ async function runBookmarkContextSummaryPipeline(
     "최종 요약 편집",
   );
 
-  const answerDraft = await composeSectionedSummary(index, prepared.plan, sectionDrafts);
+  const answerDraft = await composeSectionedSummary(
+    index,
+    prepared.plan,
+    sectionDrafts,
+  );
   const usedEvidenceMap = new Map<string, TextChunk>();
   for (const sectionDraft of sectionDrafts) {
     for (const chunk of sectionDraft.evidence) {
@@ -784,7 +792,8 @@ async function runBookmarkContextSummaryPipeline(
         title: section.title,
         path: context.path,
         pageNumber,
-        attachmentItemID: Number((resolved.attachmentItem as any)?.id || 0) || undefined,
+        attachmentItemID:
+          Number((resolved.attachmentItem as any)?.id || 0) || undefined,
       };
     })
     .filter((entry): entry is ChatSectionLink => Boolean(entry));
@@ -797,7 +806,9 @@ async function runBookmarkContextSummaryPipeline(
 }
 
 function prepareBookmarkContextSummaryPlan(contexts: PdfSectionContext[]) {
-  const selected = contexts.filter((entry) => Boolean(String(entry.title || "").trim()));
+  const selected = contexts.filter((entry) =>
+    Boolean(String(entry.title || "").trim()),
+  );
   const sections: SummaryPlanSection[] = [];
   const contextBySectionID = new Map<string, PdfSectionContext>();
 
@@ -832,11 +843,14 @@ function prepareBookmarkContextSummaryPlan(contexts: PdfSectionContext[]) {
   };
 }
 
-function buildContextChunkFromPdfSection(section: PdfSectionContext): TextChunk {
+function buildContextChunkFromPdfSection(
+  section: PdfSectionContext,
+): TextChunk {
   const raw = String(section.contextText || "").trim();
-  const text = raw.length > MAX_CONTEXT_CHARS
-    ? `${raw.slice(0, MAX_CONTEXT_CHARS).trim()}...`
-    : raw;
+  const text =
+    raw.length > MAX_CONTEXT_CHARS
+      ? `${raw.slice(0, MAX_CONTEXT_CHARS).trim()}...`
+      : raw;
   return {
     id: `toc:${section.path || section.title}`,
     text,
@@ -951,15 +965,20 @@ async function askPaperQuestion(item: Zotero.Item, question: string) {
   const conversation = await getConversation(resolved.paperID);
   const memory = await getConversationMemory(resolved.paperID);
 
-  const retrieval = await retrieveRelevantChunks(resolved.paperID, index, question, 6);
+  const retrieval = await retrieveRelevantChunks(
+    resolved.paperID,
+    index,
+    question,
+    6,
+  );
   const contextText = buildContextBlock(retrieval.chunks);
 
-  const history = conversation
-    .slice(-MAX_HISTORY_MESSAGES)
-    .map((message): LLMMessage => ({
+  const history = conversation.slice(-MAX_HISTORY_MESSAGES).map(
+    (message): LLMMessage => ({
       role: message.role,
       content: message.content,
-    }));
+    }),
+  );
 
   const memoryBlock = memory?.summary
     ? ["대화 장기 메모리(참고용):", memory.summary].join("\n")
@@ -1048,7 +1067,9 @@ function buildPaperIndex(
 ): PaperIndex {
   const chunks = chunkText(normalizedText);
   if (!chunks.length) {
-    throw new Error("No readable paper content found. Index the PDF in Zotero first.");
+    throw new Error(
+      "No readable paper content found. Index the PDF in Zotero first.",
+    );
   }
 
   return {
@@ -1115,15 +1136,16 @@ function renderChatBubbleContent(
         anchor.addEventListener("click", (event) => {
           event.preventDefault();
           event.stopPropagation();
-          void navigateToPdfSection(attachmentItemID, pageNumber)
-            .catch((error) => {
+          void navigateToPdfSection(attachmentItemID, pageNumber).catch(
+            (error) => {
               ztoolkit.log("Failed to navigate from heading link", {
                 attachmentItemID,
                 pageNumber,
                 title: heading.title,
                 error: stringifyError(error),
               });
-            });
+            },
+          );
         });
         bubble.append(anchor);
       } else {
@@ -1204,7 +1226,10 @@ function normalizeHeadingKey(value: string) {
     .toLowerCase();
 }
 
-async function navigateToPdfSection(attachmentItemID: number, pageNumber: number) {
+async function navigateToPdfSection(
+  attachmentItemID: number,
+  pageNumber: number,
+) {
   const pageIndex = Math.max(0, Math.floor(pageNumber) - 1);
   const reader = findReaderForAttachment(attachmentItemID);
 
@@ -1273,7 +1298,10 @@ async function retrieveRelevantChunks(
   const keywordChunks = limitChunksByContext(
     index.chunks
       .filter((chunk) => (lexicalScores.get(chunk.id) || 0) > 0)
-      .sort((a, b) => (lexicalScores.get(b.id) || 0) - (lexicalScores.get(a.id) || 0))
+      .sort(
+        (a, b) =>
+          (lexicalScores.get(b.id) || 0) - (lexicalScores.get(a.id) || 0),
+      )
       .slice(0, topK),
   );
 
@@ -1344,7 +1372,10 @@ async function retrieveRelevantChunks(
       retrievalMode: "hybrid",
     };
   } catch (error) {
-    ztoolkit.log("Hybrid retrieval failed; fallback to keyword retrieval", error);
+    ztoolkit.log(
+      "Hybrid retrieval failed; fallback to keyword retrieval",
+      error,
+    );
     return {
       chunks: keywordChunks.length
         ? keywordChunks
@@ -1354,7 +1385,10 @@ async function retrieveRelevantChunks(
   }
 }
 
-function limitChunksByContext(chunks: TextChunk[], maxChars = MAX_CONTEXT_CHARS) {
+function limitChunksByContext(
+  chunks: TextChunk[],
+  maxChars = MAX_CONTEXT_CHARS,
+) {
   let charCount = 0;
   const limited: TextChunk[] = [];
   for (const chunk of chunks) {
@@ -1477,7 +1511,9 @@ async function resolvePaper(item: Zotero.Item): Promise<ResolvedPaper> {
   }
 
   const title =
-    readFieldText(paperItem, "title") || readFieldText(item, "title") || "Untitled";
+    readFieldText(paperItem, "title") ||
+    readFieldText(item, "title") ||
+    "Untitled";
 
   return {
     paperID: String((paperItem as any).id || (item as any).id),
@@ -1501,7 +1537,9 @@ async function loadPaperText(resolved: ResolvedPaper) {
     }
   }
 
-  const abstractText = stripHTML(readFieldText(resolved.paperItem, "abstractNote"));
+  const abstractText = stripHTML(
+    readFieldText(resolved.paperItem, "abstractNote"),
+  );
   if (abstractText) {
     sourceParts.push("abstract");
     return {
@@ -1567,8 +1605,13 @@ async function getAttachmentFilePath(attachment: Zotero.Item) {
 
   try {
     const attachmentsAPI = (Zotero as any).Attachments;
-    if (attachmentsAPI && typeof attachmentsAPI.getFilePathAsync === "function") {
-      const value = await attachmentsAPI.getFilePathAsync((attachment as any).id);
+    if (
+      attachmentsAPI &&
+      typeof attachmentsAPI.getFilePathAsync === "function"
+    ) {
+      const value = await attachmentsAPI.getFilePathAsync(
+        (attachment as any).id,
+      );
       if (typeof value === "string") {
         return value;
       }
@@ -1708,7 +1751,11 @@ async function requestLLM(messages: LLMMessage[]) {
   };
 
   try {
-    const responsePayload = await postJSON(llmConfig.endpoint, headers, payload);
+    const responsePayload = await postJSON(
+      llmConfig.endpoint,
+      headers,
+      payload,
+    );
     const content = extractChatContent(responsePayload);
 
     if (!content) {
@@ -1759,7 +1806,11 @@ async function requestEmbeddings(texts: string[]) {
     input: texts,
   };
 
-  const responsePayload = await postJSON(embeddingConfig.endpoint, headers, payload);
+  const responsePayload = await postJSON(
+    embeddingConfig.endpoint,
+    headers,
+    payload,
+  );
   const vectors = extractEmbeddingVectors(responsePayload);
   if (vectors.length !== texts.length) {
     throw new Error(
@@ -1774,7 +1825,10 @@ async function postJSON(
   headers: Record<string, string>,
   payload: unknown,
 ) {
-  if ((Zotero as any).HTTP && typeof (Zotero as any).HTTP.request === "function") {
+  if (
+    (Zotero as any).HTTP &&
+    typeof (Zotero as any).HTTP.request === "function"
+  ) {
     const response = await (Zotero.HTTP as any).request("POST", endpoint, {
       headers,
       body: JSON.stringify(payload),
@@ -1819,7 +1873,8 @@ function getLLMConfig(): LLMConfig {
   ).trim();
   const localMode = Boolean(Zotero.Prefs.get(`${prefPrefix}.localMode`, true));
   const localBaseUrl = String(
-    Zotero.Prefs.get(`${prefPrefix}.localBaseUrl`, true) || DEFAULT_LOCAL_BASE_URL,
+    Zotero.Prefs.get(`${prefPrefix}.localBaseUrl`, true) ||
+      DEFAULT_LOCAL_BASE_URL,
   ).trim();
   const localEndpoint = normalizeChatEndpoint(localBaseUrl);
   const localModel = String(
@@ -1861,7 +1916,8 @@ function getEmbeddingConfig(): EmbeddingConfig {
   ).trim();
   const localMode = Boolean(Zotero.Prefs.get(`${prefPrefix}.localMode`, true));
   const localBaseUrl = String(
-    Zotero.Prefs.get(`${prefPrefix}.localBaseUrl`, true) || DEFAULT_LOCAL_BASE_URL,
+    Zotero.Prefs.get(`${prefPrefix}.localBaseUrl`, true) ||
+      DEFAULT_LOCAL_BASE_URL,
   ).trim();
   const localEndpoint = normalizeEmbeddingEndpoint(localBaseUrl);
   const localModel = String(
@@ -1891,7 +1947,9 @@ function isPaperChatEnabled() {
 }
 
 function isReaderStandaloneMode() {
-  return Boolean(Zotero.Prefs.get(`${config.prefsPrefix}.readerStandalone`, true));
+  return Boolean(
+    Zotero.Prefs.get(`${config.prefsPrefix}.readerStandalone`, true),
+  );
 }
 
 function isHybridSearchEnabled() {
@@ -1901,7 +1959,9 @@ function isHybridSearchEnabled() {
 }
 
 function isEvidenceRequired() {
-  return Boolean(Zotero.Prefs.get(`${config.prefsPrefix}.requireEvidence`, true));
+  return Boolean(
+    Zotero.Prefs.get(`${config.prefsPrefix}.requireEvidence`, true),
+  );
 }
 
 function schedulePaperChatSectionAtTop(doc: Document | null | undefined) {
@@ -1944,14 +2004,18 @@ function placePaperChatSectionAtTop(doc: Document | null | undefined) {
       (button.closest(".pin-wrapper") as HTMLElement | null) || button;
     const infoWrapper =
       (infoButton?.closest(".pin-wrapper") as HTMLElement | null) || infoButton;
-    const targetParent = infoWrapper?.parentElement || buttonWrapper.parentElement;
+    const targetParent =
+      infoWrapper?.parentElement || buttonWrapper.parentElement;
     if (targetParent) {
       if (infoWrapper && infoWrapper.parentElement === targetParent) {
         if (buttonWrapper !== infoWrapper) {
           targetParent.insertBefore(buttonWrapper, infoWrapper);
         }
       } else if (targetParent.firstElementChild !== buttonWrapper) {
-        targetParent.insertBefore(buttonWrapper, targetParent.firstElementChild);
+        targetParent.insertBefore(
+          buttonWrapper,
+          targetParent.firstElementChild,
+        );
       }
     }
   }
@@ -1976,7 +2040,10 @@ function placePaperChatSectionAtTop(doc: Document | null | undefined) {
   }
 }
 
-function applyStandaloneSidebarMode(doc: Document | null | undefined, enabled: boolean) {
+function applyStandaloneSidebarMode(
+  doc: Document | null | undefined,
+  enabled: boolean,
+) {
   if (!doc) {
     return;
   }
@@ -2149,7 +2216,10 @@ async function getConversationMemory(paperID: string) {
   return store.memories[paperID] || null;
 }
 
-async function refreshConversationMemoryIfNeeded(paperID: string, title: string) {
+async function refreshConversationMemoryIfNeeded(
+  paperID: string,
+  title: string,
+) {
   const prompts = await getPromptConfig();
   const store = await loadStore();
   const conversation = store.conversations[paperID] || [];
@@ -2255,7 +2325,9 @@ async function getOrCreateChunkEmbeddings(paperID: string, index: PaperIndex) {
   if (missing.length) {
     for (let i = 0; i < missing.length; i += EMBEDDING_BATCH_SIZE) {
       const batch = missing.slice(i, i + EMBEDDING_BATCH_SIZE);
-      const vectors = await requestEmbeddings(batch.map((item) => item.chunk.text));
+      const vectors = await requestEmbeddings(
+        batch.map((item) => item.chunk.text),
+      );
       for (let j = 0; j < batch.length; j += 1) {
         const pair = batch[j];
         const vector = vectors[j];

@@ -1,7 +1,9 @@
 <linkset>
   <html:link rel="localization" href="__addonRef__-preferences.ftl" />
 </linkset>
-<groupbox onload="Zotero.__addonInstance__.hooks.onPrefsEvent('load', { window })">
+<groupbox
+  onload="Zotero.__addonInstance__.hooks.onPrefsEvent('load', { window })"
+>
   <label><html:h2 data-l10n-id="pref-title"></html:h2></label>
 
   <checkbox
@@ -69,9 +71,18 @@
       style="min-width: 420px"
     >
       <menupopup>
-        <menuitem label="text-embedding-3-small" value="text-embedding-3-small" />
-        <menuitem label="text-embedding-3-large" value="text-embedding-3-large" />
-        <menuitem label="text-embedding-ada-002" value="text-embedding-ada-002" />
+        <menuitem
+          label="text-embedding-3-small"
+          value="text-embedding-3-small"
+        />
+        <menuitem
+          label="text-embedding-3-large"
+          value="text-embedding-3-large"
+        />
+        <menuitem
+          label="text-embedding-ada-002"
+          value="text-embedding-ada-002"
+        />
         <menuitem label="nomic-embed-text" value="nomic-embed-text" />
         <menuitem label="mxbai-embed-large" value="mxbai-embed-large" />
         <menuitem label="bge-m3" value="bge-m3" />
@@ -131,9 +142,7 @@
   </hbox>
 
   <hbox align="center" class="pref-row">
-    <html:label for="zotero-prefpane-__addonRef__-llm-model"
-      >Model</html:label
-    >
+    <html:label for="zotero-prefpane-__addonRef__-llm-model">Model</html:label>
     <menulist
       id="zotero-prefpane-__addonRef__-llm-model"
       preference="llmModel"

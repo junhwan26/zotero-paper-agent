@@ -217,8 +217,14 @@ export async function extractSectionContextsFromAttachment(
     baseContexts = buildEmptySectionContextsFromNodes(nodes);
   }
   const attachmentText = await readAttachmentTextSafe(attachmentItemID);
-  const enriched = enrichContextsWithAttachmentText(baseContexts, attachmentText, options);
-  const withContext = enriched.filter((entry) => Boolean(entry.contextText)).length;
+  const enriched = enrichContextsWithAttachmentText(
+    baseContexts,
+    attachmentText,
+    options,
+  );
+  const withContext = enriched.filter((entry) =>
+    Boolean(entry.contextText),
+  ).length;
 
   logOutlineDebug({
     stage: "section-context-attachment-text",
@@ -293,7 +299,8 @@ export async function readAttachmentPdfArrayBuffer(attachmentItemID: number) {
 }
 
 function getAttachmentItemOrThrow(attachmentItemID: number) {
-  const item = (Zotero.Items.get(attachmentItemID) || null) as Zotero.Item | null;
+  const item = (Zotero.Items.get(attachmentItemID) ||
+    null) as Zotero.Item | null;
   if (!item) {
     throw new Error(`Attachment item not found (itemID=${attachmentItemID}).`);
   }
@@ -432,15 +439,16 @@ async function extractSectionContextsInternal(
 
   try {
     try {
-      const opened = loader === "reader" && filePath
-        ? await openPdfDocumentTaskFromUrl(lib, filePath, false)
-        : await openPdfDocumentTaskFromDataOrUrl(
-            lib,
-            arrayBuffer,
-            false,
-            filePath,
-            loadingTask,
-          );
+      const opened =
+        loader === "reader" && filePath
+          ? await openPdfDocumentTaskFromUrl(lib, filePath, false)
+          : await openPdfDocumentTaskFromDataOrUrl(
+              lib,
+              arrayBuffer,
+              false,
+              filePath,
+              loadingTask,
+            );
       loadingTask = opened.task;
       pdf = opened.pdf;
       loadSource = opened.source;
@@ -453,15 +461,16 @@ async function extractSectionContextsInternal(
         error: stringifyError(workerError),
       });
       await safeDestroyLoadingTask(loadingTask);
-      const opened = loader === "reader" && filePath
-        ? await openPdfDocumentTaskFromUrl(lib, filePath, true)
-        : await openPdfDocumentTaskFromDataOrUrl(
-            lib,
-            arrayBuffer,
-            true,
-            filePath,
-            loadingTask,
-          );
+      const opened =
+        loader === "reader" && filePath
+          ? await openPdfDocumentTaskFromUrl(lib, filePath, true)
+          : await openPdfDocumentTaskFromDataOrUrl(
+              lib,
+              arrayBuffer,
+              true,
+              filePath,
+              loadingTask,
+            );
       loadingTask = opened.task;
       pdf = opened.pdf;
       loadSource = opened.source;
@@ -539,11 +548,7 @@ async function openPdfDocumentTaskFromDataOrUrl(
     }
     await safeDestroyLoadingTask(task);
     await safeDestroyLoadingTask(previousTask);
-    return await openPdfDocumentTaskFromUrl(
-      lib,
-      filePath,
-      disableWorker,
-    );
+    return await openPdfDocumentTaskFromUrl(lib, filePath, disableWorker);
   }
 }
 
@@ -566,16 +571,18 @@ async function openPdfDocumentTaskFromUrl(
     }> = [
       {
         id: "object+options",
-        open: () => lib.getDocument({
-          url,
-          ...baseOptions,
-        }),
+        open: () =>
+          lib.getDocument({
+            url,
+            ...baseOptions,
+          }),
       },
       {
         id: "object",
-        open: () => lib.getDocument({
-          url,
-        }),
+        open: () =>
+          lib.getDocument({
+            url,
+          }),
       },
       {
         id: "string",
@@ -639,10 +646,12 @@ function buildPdfUrlCandidates(filePath: string) {
 
 function isMissingUrlParameterError(error: unknown) {
   const text = stringifyError(error).toLowerCase();
-  return text.includes("getdocument") &&
+  return (
+    text.includes("getdocument") &&
     (text.includes("no `url` parameter provided") ||
       text.includes("no 'url' parameter provided") ||
-      text.includes("no url parameter provided"));
+      text.includes("no url parameter provided"))
+  );
 }
 
 async function parseOutlineFromPdfDocument(
@@ -745,9 +754,10 @@ async function parseOutlineFromPdfDocument(
       }
 
       const title = normalizeOutlineTitle(item?.title);
-      const url = typeof item?.url === "string" && item.url.trim()
-        ? item.url.trim()
-        : undefined;
+      const url =
+        typeof item?.url === "string" && item.url.trim()
+          ? item.url.trim()
+          : undefined;
       const children = await parseItems(
         Array.isArray(item?.items) ? item.items : [],
         depth + 1,
@@ -954,9 +964,10 @@ function resolveSectionPageRange(
     } as const;
   }
 
-  const safeNumPages = Number.isFinite(numPages) && numPages > 0
-    ? Math.floor(numPages)
-    : Math.floor(current.pageNumber);
+  const safeNumPages =
+    Number.isFinite(numPages) && numPages > 0
+      ? Math.floor(numPages)
+      : Math.floor(current.pageNumber);
   const startPageNumber = Math.max(1, Math.floor(current.pageNumber));
   let endPageNumber = Math.max(startPageNumber, safeNumPages);
 
@@ -994,8 +1005,7 @@ async function buildContextTextForRange(
 ) {
   const safeStart = Math.max(1, Math.floor(startPageNumber));
   const safeEnd = Math.max(safeStart, Math.floor(endPageNumber));
-  const maxEndByPages =
-    safeStart + Math.max(1, options.maxPagesPerSection) - 1;
+  const maxEndByPages = safeStart + Math.max(1, options.maxPagesPerSection) - 1;
   const effectiveEnd = Math.min(safeEnd, maxEndByPages);
   const parts: string[] = [];
   let chars = 0;
@@ -1043,16 +1053,14 @@ async function getPageText(
 
   try {
     const page = await pdf.getPage(pageNumber);
-    let textContent:
-      | {
-          items: Array<{
-            str?: string;
-            unicode?: string;
-            text?: string;
-            [key: string]: unknown;
-          }>;
-        }
-      | null = null;
+    let textContent: {
+      items: Array<{
+        str?: string;
+        unicode?: string;
+        text?: string;
+        [key: string]: unknown;
+      }>;
+    } | null = null;
     try {
       textContent = await page.getTextContent({
         includeMarkedContent: true,
@@ -1116,7 +1124,9 @@ async function getPageText(
 }
 
 function normalizePageText(text: string) {
-  return String(text || "").replace(/\s+/g, " ").trim();
+  return String(text || "")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function clipText(text: string, maxChars: number) {
@@ -1139,13 +1149,13 @@ function shouldFallbackToBytePath(contexts: PdfSectionContext[]) {
   if (!withRange.length) {
     return false;
   }
-  const withText = withRange.filter((entry) => Boolean(entry.contextText.trim()));
+  const withText = withRange.filter((entry) =>
+    Boolean(entry.contextText.trim()),
+  );
   return withText.length === 0;
 }
 
-function buildEmptySectionContextsFromNodes(
-  nodes: PdfOutlineNode[],
-) {
+function buildEmptySectionContextsFromNodes(nodes: PdfOutlineNode[]) {
   const flattened = flattenOutlineWithPath(nodes);
   const pageCount = Math.max(
     1,
@@ -1212,7 +1222,12 @@ function enrichContextsWithAttachmentText(
     if (start < 0) {
       return entry;
     }
-    const end = findSectionEndIndex(contexts, starts, index, attachmentText.length);
+    const end = findSectionEndIndex(
+      contexts,
+      starts,
+      index,
+      attachmentText.length,
+    );
     const rawSlice = attachmentText.slice(start, end).trim();
     if (!rawSlice) {
       return entry;
@@ -1237,10 +1252,7 @@ function enrichContextsWithAttachmentText(
   });
 }
 
-function findSectionStartsByTitle(
-  contexts: PdfSectionContext[],
-  text: string,
-) {
+function findSectionStartsByTitle(contexts: PdfSectionContext[], text: string) {
   const starts = new Array<number>(contexts.length).fill(-1);
   const loweredText = text.toLowerCase();
   let cursor = 0;
@@ -1306,7 +1318,9 @@ function buildHeadingCandidates(title: string) {
     .replace(/\s+/g, " ")
     .trim();
   return Array.from(
-    new Set([normalized, noPunct, noStopWords].filter((entry) => entry.length >= 3)),
+    new Set(
+      [normalized, noPunct, noStopWords].filter((entry) => entry.length >= 3),
+    ),
   );
 }
 

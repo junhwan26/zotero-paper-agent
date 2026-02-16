@@ -26,6 +26,16 @@ Required in `.env`:
 - Click summary section headings to jump to PDF pages
 - Configure LLM/Embedding endpoints and models in Preferences
 
+## Screenshots
+
+### Reader Sidebar
+
+![Paper Agent Sidebar](paper-agent-sidebar.png)
+
+### Settings
+
+![Paper Agent Settings](paper-agent-settings.png)
+
 ## Installing
 
 ### Install from Release (recommended)
